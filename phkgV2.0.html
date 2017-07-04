@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Personalised Health Knowledge Graph</title>
+		<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<script src="d3.v4.js"></script>
+		<script src="jquery-3.2.1.js"></script>
+		<script src="bootstrap-3.3.7.js"></script>
+		<script src="echarts.js"></script>
+		<script src="phkgV2.0.js"></script>
+		<script src="d3.layout.cloud.js"></script>
+		<script src="convnet.js"></script>
+		<script src="regression.min.js"></script>
+		<script src="levenshtein.js"></script>
+
+		<link rel="stylesheet" type="text/css" href="/phkgV2.0.css">
+		<link rel="shortcut icon" type="image/ico" href="/icons/search.ico">
+	</head>
+	<body>
+		<div class="modal fade" id="manage-panel" tabindex="-1" role="dialog"">
+			<div class="modal-dialog">
+				<div class="modal-content">
+				<div class="modal-header" style="background-color: #49075E">
+					<button data-dismiss="modal" class="close" type="button">
+					<span aria-hidden="true" style="color: white">
+						×
+					</span>
+					<span class="sr-only">
+						Close
+					</span>
+					</button>
+					<h4 class="modal-title" style="color: white"><strong>Manage Panel</strong></h4>
+				</div>
+				<div class="modal-body">
+					<ul id="manage-tab" class="nav nav-tabs">
+					<li class="active">
+						<a href="#add" data-toggle="tab" style="color: #49075E">
+						<strong>Add</strong>
+						</a>
+					</li>
+					<li>
+						<a href="#modify" data-toggle="tab" style="color: #49075E">
+						<strong>Modify</strong>   
+						</a>
+					</li>
+					</ul>
+					<div id="manage-tab-content" class="tab-content">
+					<div class="tab-pane fade in active" id="add">
+						<div class="input-group">
+						<span class="input-group-addon">
+							ID
+						</span>
+						<input type="text" class="form-control" id="add-patient-id" value="44109989">
+						<span class="input-group-addon">
+							Name
+						</span>
+						<input type="text" class="form-control" id="add-patient-name" value="Lixing Liang">
+						<span class="input-group-addon">
+							Age
+						</span>
+						<input type="text" class="form-control" id="add-patient-age" value="24">
+						<span class="input-group-addon">
+							Gender
+						</span>
+						<input type="text" class="form-control" id="add-patient-gender" value="Male">
+						</div>
+						<br />
+						<p style="font-size: 15px;color: #49075E">
+						<strong>Treatment</strong>
+						<button class="btn btn-default" type="button" style="padding: 1px" id="add-patient-treatment">
+							<strong>+</strong>
+						</button>
+						<button class="btn btn-default" type="button" style="padding: 1px" id="del-patient-treatment">
+							<strong>-</strong>
+						</button>
+						</p>
+						<div id="add-treatments">
+						<div class="input-group" id="add-treatments-1">
+							<span class="input-group-addon" id="basic-addon1">
+							Date
+							</span>
+							<input type="text" class="form-control" id="add-treatment-date" value="2017-2-30">
+							<span class="input-group-addon" id="basic-addon1">
+							Disease
+							</span>
+							<input type="text" class="form-control" id="add-treatment-disease" value="Flu">
+							<span class="input-group-addon" id="basic-addon1">
+							Medicine
+							</span>
+							<input type="text" class="form-control" id="add-treatment-medicine" value="none">
+						</div>
+						
+						</div>
+					</div>
+					<div class="tab-pane fade" id="modify">
+						<div class="input-group">
+						<span class="input-group-addon">
+							ID
+						</span>
+						<input type="text" class="form-control" placeholder="Patient ID" id="modify-patient-id" value="44109989">
+						<span class="input-group-btn">
+							<button class="btn btn-default" type="button" id="modify-search">
+								Search
+							</button>
+						</span>
+						</div>
+					</div>
+					</div>            
+				</div>
+				<div class="modal-footer">
+					<button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
+					<button data-dismiss="modal"class="btn" type="button" style="background-color: #49075E; color: white" id="confirm">Confirm</button>
+				</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div>
+		<div id="navigation">
+			<ul class="nav nav-pills">
+				<li role="presentation">
+					<a href="">
+						<strong>Home</strong>
+					</a>
+				</li>
+				<li role="presentation">
+					<a href="">
+						<strong>Refresh</strong>
+					</a>
+				</li>
+				<li role="presentation">
+					<a href="">
+						<strong>Back</strong>
+					</a>
+				</li>
+				<li>
+					<button class="btn btn-default" type="button">
+						<strong style="color: black;">From</strong>
+					</button>
+				</li>
+				<li>
+					<input type="text" class="form-control" id="from-time" value="2007">
+				</li>
+				<li>
+					<button class="btn btn-default" type="button">
+						<strong style="color: black;">To</strong>
+					</button>
+				</li>
+				<li>
+					<input type="text" class="form-control col-xs-2" id="to-time" value="2017">
+				</li>
+				<li>
+					<button class="btn btn-default" type="button">
+						<strong style="color: black;">ID</strong>
+					</button>
+				</li>
+				<li>
+					<input type="text" name="search" class="form-control" id="search-query" value="250">
+				</li>
+				<li role="presentation">
+					<button class="btn btn-default" type="button" id="search-button">
+						<strong style="color: black;">Search</strong>
+					</button>
+				</li>
+				<li>
+					<a href="" data-toggle="modal" data-target="#manage-panel">
+						<strong>Manage</strong>
+					</a>
+				</li>
+			</ul>
+		</div>
+		<div id="graph">
+			<svg id="svg"></svg>
+		</div>
+		<div id="info"></div>
+		<div id="info2">
+		</div>
+	</body>
+</html>

@@ -1,0 +1,54 @@
+html,body {
+	height: 100%;
+}
+td {
+	white-space: pre-line;
+}
+text {
+	color:#333;
+}
+.links_dashed {
+	stroke-dasharray: 10,5;
+}
+
+#navigation 
+{
+	background-color: #49075E;
+	height: 6%;
+	width: 100%;
+}
+#navigation li {
+	margin: auto,10px;
+}
+#navigation li strong{
+	color: white;
+}
+#graph {
+	width: 35%;
+	height: 94%;
+	background-color: white;
+	float: left;
+}
+#info {
+	width: 35%;
+	height: 94%;
+	background-color: white;
+	float: left;
+	overflow: auto;
+}
+#info2 {
+	width: 30%;
+	height: 94%;
+	background-color: white;
+	float: right;
+	overflow: auto;
+}
+#svg {
+	width: 100%;
+	height: 100%;
+}
+#from-time,#to-time{
+	width: 60px;
+}
+
+
